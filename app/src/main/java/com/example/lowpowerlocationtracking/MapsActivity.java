@@ -28,7 +28,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationManager locationManager;
     private Button currentLocationBtn,plusSignBtn,minusSignBtn;
     LatLng latLng;
-    int zoom=15;
+    int zoom=16;
     private static final int PERMISSIONS_REQUEST_LOCATION = 1001;
 
 
