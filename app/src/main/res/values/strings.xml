@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Low Power Location Tracking</string>
+    <string name="title_activity_maps">MapsActivity</string>
+</resources>
