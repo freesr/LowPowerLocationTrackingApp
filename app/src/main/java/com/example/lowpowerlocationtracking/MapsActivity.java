@@ -52,6 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     float[] velocity = {0, 0, 0};
     float[] position = {0, 0, 0};
     long lastTime = System.currentTimeMillis();
+    long oldTime =0;
 
     LatLng latLng;
     int zoom = 16;
@@ -172,8 +173,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-//        latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//        gravity = new float[]{0, 0, 0};
+        mMap.clear();
+        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(latLng).title("New Location"));
+        //setZoom();
+        //        gravity = new float[]{0, 0, 0};
 //
 //        // Initialize the displacement variables
 //        distanceTraveled = 0;
@@ -187,26 +191,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onSensorChanged(SensorEvent event) {
         if(event.sensor.getType() == Sensor.TYPE_ACCELEROMETER){
-//            long timeElapsed = System.currentTimeMillis() - lastUpdate;
-//            lastUpdate = System.currentTimeMillis();
-//
-//            acclX = event.values[0];
-//            acclY = event.values[1];
-//            acclZ = event.values[2];
-//            acceleration = (float) Math.sqrt(acclX * acclX + acclY * acclY + acclZ * acclZ);
-//            velocity = (float) ((acceleration-9.8) * timeElapsed / 1000.0f);
-//
-//            // integrate velocity to get displacement
-//            displacement  =  displacement +  velocity * timeElapsed / 1000.0f;
-//            System.out.println("acceleration" + acceleration + " velocity "+velocity +" displacement "+ displacement +" timeElapsed "+ timeElapsed);
-//               // LatLng currentLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-//                float[] results = new float[1];
-//                Location.distanceBetween(latLng.latitude, latLng.longitude,
-//                        latLng.latitude + displacement, latLng.longitude, results);
-//                float distance = results[0];
-//                LatLng newLatLng = SphericalUtil.computeOffset(latLng, distance, 0);
-//                mMap.addPolyline(new PolylineOptions().add(latLng, newLatLng).width(5).color(Color.RED));
-//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng, 17));
 
             gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
             gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
@@ -230,19 +214,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             // Update the distance traveled variable
             distanceTraveled = (float) Math.sqrt(position[0] * position[0] + position[1] * position[1] + position[2] * position[2]);
-            distanceTraveled = distanceTraveled/10000000;
+            distanceTraveled = distanceTraveled/10;
             System.out.println("distance Travelled"+ distanceTraveled);
-                            float[] results = new float[1];
-            Location.distanceBetween(latLng.latitude, latLng.longitude,
-                        latLng.latitude + distanceTraveled, latLng.longitude, results);
-                float distance = results[0];
-                LatLng newLatLng = SphericalUtil.computeOffset(latLng, distance, 0);
-                System.out.println("lat" +newLatLng.latitude );
-               // mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(newLatLng).title("Random Point"));
-                mMap.addPolyline(new PolylineOptions().add(latLng, newLatLng).width(5).color(Color.RED));
-                //latLng = newLatLng;
-                setZoom();
+                          //  float[] results = new float[1];
+//            Location.distanceBetween(latLng.latitude, latLng.longitude,
+//                        latLng.latitude + distanceTraveled, latLng.longitude, results);
+//                float distance = results[0];
+                if(oldTime ==0){
+                    oldTime = currentTime;
+                }
+               if(currentTime - oldTime > 1000) {
+                   System.out.println("Hiii      ");
+                   oldTime =currentTime;
+                   LatLng newLatLng = SphericalUtil.computeOffset(latLng, distanceTraveled, 0);
+                   System.out.println("lat" + newLatLng.latitude);
+                   mMap.clear();
+                   mMap.addMarker(new MarkerOptions().position(newLatLng));
+                  // mMap.addPolyline(new PolylineOptions().add(latLng, newLatLng).width(5).color(Color.RED));
+                   //latLng = newLatLng;
+                   setZoom();
+               }
         }
 
     }
